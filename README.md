@@ -1,6 +1,6 @@
 # Contextual Git Prompt
 
-## Overviewa
+## Overview
 
 Display git information in OSX terminal's prompt.
 
