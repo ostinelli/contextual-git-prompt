@@ -21,10 +21,11 @@ find_git_branch() {
 }
 
 find_git_dirty() {
-  local status=$(git status --porcelain 2> /dev/null)
   local dirty
-  if [[ "$status" != "" ]]; then
+  if [[ $(git status --porcelain 2> /dev/null) != "" ]]; then
     dirty=1
+  elif [[ $(git status 2> /dev/null) == *"Your branch is ahead"* ]]; then
+    dirty=2
   fi
   echo $dirty
 }
@@ -34,8 +35,10 @@ git_aware_prompt() {
   local git_dirty=$(find_git_dirty)
 
   if [[ $git_branch != "" ]]; then
-    if [[ $git_dirty != "" ]]; then
+    if [[ $git_dirty == "1" ]]; then
       echo "$txtgreen | $git_branch$txtred ✗ $txtgreen|$txtreset"
+    elif [[ $git_dirty == "2" ]]; then
+      echo "$txtgreen | $git_branch$txtyellow ~ $txtgreen|$txtreset"
     else
       echo "$txtgreen | $git_branch ✓ |$txtreset"
     fi
